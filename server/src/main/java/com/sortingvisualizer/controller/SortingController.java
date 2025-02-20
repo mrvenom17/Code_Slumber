@@ -1,24 +1,33 @@
 package com.sortingvisualizer.controller;
 
-import com.sortingvisualizer.model.SortingRequest;
-import com.sortingvisualizer.service.SortingService;
+import com.example.sortingvisualizer.model.SortingRequest;
+import com.example.sortingvisualizer.services.SortingService;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000") // Allow React to access backend
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/sort")
+@RequestMapping("/api/sort") 
 public class SortingController {
-
     private final SortingService sortingService;
 
     public SortingController(SortingService sortingService) {
         this.sortingService = sortingService;
     }
 
-    @PostMapping
-    public List<List<Integer>> sort(@RequestBody SortingRequest request) {
-        return sortingService.sort(request.getAlgorithm(), request.getArray());
+   
+    @GetMapping("/test")
+    public ResponseEntity<String> testEndpoint() {
+        return ResponseEntity.ok("Sorting API is running!");
+    }
+
+    
+    @PostMapping("/process") 
+    public ResponseEntity<List<List<Integer>>> sort(@RequestBody SortingRequest request) {
+        List<List<Integer>> sortingSteps = sortingService.sort(request.getAlgorithm(), request.getArray());
+        return ResponseEntity.ok(sortingSteps);
     }
 }
