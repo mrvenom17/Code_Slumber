@@ -6,7 +6,7 @@ export const sortArray = async (algorithm, array) => {
             algorithm, 
             array 
         }, {
-            headers: { "Content-Type": "application/json" } // Ensure JSON payload
+            headers: { "Content-Type": "application/json" }
         });
 
         console.log("Backend Response:", response.data);
