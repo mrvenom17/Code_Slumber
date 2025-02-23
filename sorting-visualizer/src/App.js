@@ -1,17 +1,11 @@
-import React from "react";
-import Header from "./components/Header";
-import Visualizer from "./components/Visualizer";
-import Footer from "./components/Footer";
-import "./styles.css";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import SortingVisualizer from './components/SortingVisualizer';
+import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 
-function App() {
-    return (
-        <div className="app-container">
-            <Header />
-            <Visualizer />
-            <Footer />
-        </div>
-    );
-}
-
-export default App;
+ReactDOM.render(
+  <React.StrictMode>
+    <SortingVisualizer />
+  </React.StrictMode>,
+  document.getElementById('root')
+);
