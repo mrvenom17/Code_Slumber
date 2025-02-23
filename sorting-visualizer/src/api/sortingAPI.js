@@ -1,8 +1,18 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:8080/sort";
-
 export const sortArray = async (algorithm, array) => {
-    const response = await axios.post(API_BASE_URL, { algorithm, array });
-    return response.data;
+    try {
+        const response = await axios.post("http://localhost:8080/sort", { 
+            algorithm, 
+            array 
+        }, {
+            headers: { "Content-Type": "application/json" } // Ensure JSON payload
+        });
+
+        console.log("Backend Response:", response.data);
+        return response.data || [];
+    } catch (error) {
+        console.error("Sorting API Error:", error.response?.data || error.message);
+        return [];
+    }
 };

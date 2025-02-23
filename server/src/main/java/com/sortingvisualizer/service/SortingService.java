@@ -1,45 +1,49 @@
 package com.sortingvisualizer.service;
-
-import java.util.List;
-import java.util.ArrayList;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import java.util.*;
 
 @Service
 public class SortingService {
-    
+
+    private static final Logger logger = LoggerFactory.getLogger(SortingService.class);
+
     public List<List<Integer>> sort(String algorithm, List<Integer> array) {
         List<List<Integer>> steps = new ArrayList<>();
-        
+        List<Integer> arr = new ArrayList<>(array);
+
+        logger.info("Sorting started with algorithm: {}", algorithm);
+
         switch (algorithm.toLowerCase()) {
             case "quick":
-                quickSort(array, 0, array.size() - 1, steps);
+                quickSort(arr, 0, arr.size() - 1, steps);
                 break;
             case "merge":
-                mergeSort(array, 0, array.size() - 1, steps);
+                mergeSort(arr, 0, arr.size() - 1, steps);
                 break;
             case "selection":
-                selectionSort(array, steps);
-                break;
-            case "insertion":
-                insertionSort(array, steps);
+                selectionSort(arr, steps);
                 break;
             case "bubble":
-                bubbleSort(array, steps);
+                bubbleSort(arr, steps);
+                break;
+            case "insertion":
+                insertionSort(arr, steps);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid sorting algorithm: " + algorithm);
         }
 
-        return steps; 
+        logger.info("Sorting completed for algorithm: {}", algorithm);
+        return steps;
     }
 
-    
     private void quickSort(List<Integer> arr, int low, int high, List<List<Integer>> steps) {
         if (low < high) {
-            int pi = partition(arr, low, high, steps);
-            quickSort(arr, low, pi - 1, steps);
-            quickSort(arr, pi + 1, high, steps);
+            int pivotIndex = partition(arr, low, high, steps);
+            quickSort(arr, low, pivotIndex - 1, steps);
+            quickSort(arr, pivotIndex + 1, high, steps);
         }
     }
 
@@ -58,37 +62,35 @@ public class SortingService {
         return i + 1;
     }
 
-   
     private void mergeSort(List<Integer> arr, int l, int r, List<List<Integer>> steps) {
         if (l < r) {
-            int m = l + (r - l) / 2;
-            mergeSort(arr, l, m, steps);
-            mergeSort(arr, m + 1, r, steps);
-            merge(arr, l, m, r, steps);
+            int mid = l + (r - l) / 2;
+            mergeSort(arr, l, mid, steps);
+            mergeSort(arr, mid + 1, r, steps);
+            merge(arr, l, mid, r, steps);
         }
     }
 
     private void merge(List<Integer> arr, int l, int m, int r, List<List<Integer>> steps) {
-        List<Integer> left = new ArrayList<>(arr.subList(l, m + 1));
-        List<Integer> right = new ArrayList<>(arr.subList(m + 1, r + 1));
+        List<Integer> temp = new ArrayList<>(arr);
+        int i = l, j = m + 1, k = l;
 
-        int i = 0, j = 0, k = l;
-        while (i < left.size() && j < right.size()) {
-            if (left.get(i) <= right.get(j)) {
-                arr.set(k++, left.get(i++));
+        while (i <= m && j <= r) {
+            if (temp.get(i) <= temp.get(j)) {
+                arr.set(k++, temp.get(i++));
             } else {
-                arr.set(k++, right.get(j++));
+                arr.set(k++, temp.get(j++));
             }
             steps.add(new ArrayList<>(arr));
         }
 
-        while (i < left.size()) {
-            arr.set(k++, left.get(i++));
+        while (i <= m) {
+            arr.set(k++, temp.get(i++));
             steps.add(new ArrayList<>(arr));
         }
 
-        while (j < right.size()) {
-            arr.set(k++, right.get(j++));
+        while (j <= r) {
+            arr.set(k++, temp.get(j++));
             steps.add(new ArrayList<>(arr));
         }
     }
@@ -102,8 +104,25 @@ public class SortingService {
                     minIdx = j;
                 }
             }
-            swap(arr, minIdx, i);
-            steps.add(new ArrayList<>(arr));
+            if (i != minIdx) {
+                swap(arr, i, minIdx);
+                steps.add(new ArrayList<>(arr));
+            }
+        }
+    }
+
+    private void bubbleSort(List<Integer> arr, List<List<Integer>> steps) {
+        int n = arr.size();
+        for (int i = 0; i < n - 1; i++) {
+            boolean swapped = false;
+            for (int j = 0; j < n - i - 1; j++) {
+                if (arr.get(j) > arr.get(j + 1)) {
+                    swap(arr, j, j + 1);
+                    steps.add(new ArrayList<>(arr));
+                    swapped = true;
+                }
+            }
+            if (!swapped) break;
         }
     }
 
@@ -115,25 +134,13 @@ public class SortingService {
             while (j >= 0 && arr.get(j) > key) {
                 arr.set(j + 1, arr.get(j));
                 j--;
+                steps.add(new ArrayList<>(arr));
             }
             arr.set(j + 1, key);
             steps.add(new ArrayList<>(arr));
         }
     }
 
-    private void bubbleSort(List<Integer> arr, List<List<Integer>> steps) {
-        int n = arr.size();
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = 0; j < n - i - 1; j++) {
-                if (arr.get(j) > arr.get(j + 1)) {
-                    swap(arr, j, j + 1);
-                    steps.add(new ArrayList<>(arr));
-                }
-            }
-        }
-    }
-
-    
     private void swap(List<Integer> arr, int i, int j) {
         int temp = arr.get(i);
         arr.set(i, arr.get(j));

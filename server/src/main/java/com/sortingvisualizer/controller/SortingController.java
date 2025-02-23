@@ -1,33 +1,31 @@
 package com.sortingvisualizer.controller;
 
-import com.example.sortingvisualizer.model.SortingRequest;
-import com.example.sortingvisualizer.services.SortingService;
-
-import org.springframework.http.ResponseEntity;
+// import org.slf4j.Logger;
+import com.sortingvisualizer.model.SortingRequest;
+import com.sortingvisualizer.service.SortingService;
+// import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.http.ResponseEntity;
+// import org.springframework.http.HttpStatus;
+// import java.util.List;
+// import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/api/sort") 
+@RequestMapping("/sort")
 public class SortingController {
+
+    // private static final Logger logger = LoggerFactory.getLogger(SortingController.class);
     private final SortingService sortingService;
 
     public SortingController(SortingService sortingService) {
         this.sortingService = sortingService;
     }
 
-   
-    @GetMapping("/test")
-    public ResponseEntity<String> testEndpoint() {
-        return ResponseEntity.ok("Sorting API is running!");
+    @PostMapping
+    public ResponseEntity<?> sort(@RequestBody SortingRequest request) {
+        System.out.println("Received request: " + request);
+        return ResponseEntity.ok(sortingService.sort(request.getAlgorithm(), request.getArray()));
     }
 
-    
-    @PostMapping("/process") 
-    public ResponseEntity<List<List<Integer>>> sort(@RequestBody SortingRequest request) {
-        List<List<Integer>> sortingSteps = sortingService.sort(request.getAlgorithm(), request.getArray());
-        return ResponseEntity.ok(sortingSteps);
-    }
 }
