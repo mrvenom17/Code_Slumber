@@ -1,29 +1,18 @@
-import React, { useState } from "react";
-import { sortArray } from "../api/sortingAPI";
-import Controls from "./Controls";
+import React from 'react';
 
-const Visualizer = () => {
-    const [bars, setBars] = useState([]);
-
-    const handleSort = async (algorithm, array) => {
-        const steps = await sortArray(algorithm, array);
-        animateSorting(steps);
-    };
-
-    const animateSorting = (steps) => {
-        steps.forEach((step, index) => {
-            setTimeout(() => {
-                setBars([...step]);
-            }, index * 500);
-        });
-    };
-
-    return (
-        <div>
-            <Controls onSort={handleSort} />
-            <div>{bars.map((num, i) => <div key={i} style={{height: num * 5}} />)}</div>
-        </div>
-    );
+const Visualizer = ({ array }) => {
+  return (
+    <div className="visualizer-container">
+      <div className="bars-container">
+        {array.map((value, idx) => {
+          const barWidth = Math.max(8, (window.innerWidth - 250) / array.length);
+          return (
+            <div key={idx} className="bar" style={{ height: `${value}px`, width: `${barWidth}px`, margin: "0 3px" }}></div>
+          );
+        })}
+      </div>
+    </div>
+  );
 };
 
 export default Visualizer;

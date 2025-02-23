@@ -1,32 +1,24 @@
-import React, { useState } from "react";
+import React from 'react';
 
-const Controls = ({ onSort }) => {
-    const [algorithm, setAlgorithm] = useState("");
-    const [arrayInput, setArrayInput] = useState("");
+const Controls = ({ generateNewArray, size, setSize, speed, setSpeed }) => {
+  return (
+    <div className="controls-container">
+      <button className="btn-white" onClick={generateNewArray}>New Array</button>
 
-    const handleSort = () => {
-        const array = arrayInput.split(",").map(Number);
-        onSort(algorithm, array);
-    };
+      <div>
+        <label className="range-label">Size:</label>
+        <input type="range" min="5" max="100" value={size} onChange={(e) => setSize(+e.target.value)} className="form-range" />
+      </div>
+      <div>
+        <label className="range-label">Speed:</label>
+        <input type="range" min="20" max="300" value={speed} onChange={(e) => setSpeed(+e.target.value)} className="form-range" />
+      </div>
 
-    return (
-        <div>
-            <select onChange={(e) => setAlgorithm(e.target.value)}>
-                <option value="">Select Algorithm</option>
-                <option value="quick">Quick Sort</option>
-                <option value="merge">Merge Sort</option>
-                <option value="selection">Selection Sort</option>
-            </select>
-
-            <input
-                type="text"
-                placeholder="Enter numbers, e.g. 5,3,8"
-                onChange={(e) => setArrayInput(e.target.value)}
-            />
-            
-            <button onClick={handleSort}>Sort</button>
-        </div>
-    );
+      {["Bubble", "Selection", "Insertion", "Merge", "Quick"].map(sort => (
+        <button key={sort} className="btn-outline-white">{sort} Sort</button>
+      ))}
+    </div>
+  );
 };
 
 export default Controls;
