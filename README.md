@@ -37,7 +37,7 @@ This runs the app on `http://localhost:3000/`.
 ### 4️⃣ Start the Backend (Spring Boot)
 - Navigate to the backend folder:
 ```sh
-cd backend
+cd server
 ```
 - Run the Spring Boot application:
 ```sh
